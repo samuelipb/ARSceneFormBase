@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
             ModelRenderable.builder()
-                .setSource(this, Uri.parse("wolves.sfb"))
+                .setSource(this, Uri.parse("converse2.sfb"))
                 .build()
                 .thenAccept { modelRenderable ->
                     if (!modelAdded) {
@@ -44,8 +44,8 @@ class MainActivity : AppCompatActivity() {
         transformableNode.setParent(anchorNode)
         transformableNode.renderable = modelRenderable
         arFragment.arSceneView.scene.addChild(anchorNode)
-        transformableNode.scaleController.minScale = 0.1f
-        transformableNode.scaleController.maxScale = 0.5f
+        transformableNode.scaleController.minScale = 0.5f
+        transformableNode.scaleController.maxScale = 0.9f
         transformableNode.select()
     }
 }
