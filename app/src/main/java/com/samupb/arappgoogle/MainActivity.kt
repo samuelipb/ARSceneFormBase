@@ -12,6 +12,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 class MainActivity : AppCompatActivity() {
 
     var arFragment = ArFragment()
+    var modelAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,9 +21,14 @@ class MainActivity : AppCompatActivity() {
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
             ModelRenderable.builder()
-                .setSource(this, Uri.parse("Trainers_01.sfb"))
+                .setSource(this, Uri.parse("wolves.sfb"))
                 .build()
-                .thenAccept { modelRenderable -> addModelToScene(anchor, modelRenderable) }
+                .thenAccept { modelRenderable ->
+                    if (!modelAdded) {
+                        addModelToScene(anchor, modelRenderable)
+                        modelAdded = true
+                    }
+                }
                 .exceptionally { throwable ->
                     println("errorAr: ${throwable.message}")
                     val toast = android.widget.Toast.makeText(this, "Error", android.widget.Toast.LENGTH_SHORT)
@@ -38,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         transformableNode.setParent(anchorNode)
         transformableNode.renderable = modelRenderable
         arFragment.arSceneView.scene.addChild(anchorNode)
+        transformableNode.scaleController.minScale = 0.1f
+        transformableNode.scaleController.maxScale = 0.5f
         transformableNode.select()
     }
 }
