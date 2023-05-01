@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private val scene get() = arSceneView.scene
 
     private var model: Renderable? = null
-    private var modelView: ViewRenderable? = null
     var modelAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,16 +56,13 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun loadModels() {
         model = ModelRenderable.builder()
-            .setSource(this, Uri.parse("spiderbot.glb"))
+            .setSource(this, Uri.parse("converser.glb"))
             .setIsFilamentGltf(true)
-            .await()
-        modelView = ViewRenderable.builder()
-            .setView(this, R.layout.view_renderable_infos)
             .await()
     }
 
     private fun onTapPlane(hitResult: HitResult, plane: Plane, motionEvent: MotionEvent) {
-        if (model == null || modelView == null) {
+        if (model == null) {
             Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show()
             return
         }
@@ -78,16 +74,8 @@ class MainActivity : AppCompatActivity() {
                 addChild(TransformableNode(arFragment.transformationSystem).apply {
                     renderable = model
                     renderableInstance.setCulling(false)
-                    renderableInstance.animate(true).start()
                     scaleController.minScale = 0.1f
                     scaleController.maxScale = 1.3f
-                    // Add the View
-                    addChild(Node().apply {
-                        // Define the relative position
-                        localPosition = Vector3(0.0f, 1f, 0.0f)
-                        localScale = Vector3(0.7f, 0.7f, 0.7f)
-                        renderable = modelView
-                    })
                 })
             })
         }
